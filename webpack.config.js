@@ -29,7 +29,9 @@ module.exports = {
     },
     resolve: {
         extensions: [".ts", ".js"],
-        fallback: {},
+        fallback: {
+            fs: "fs",
+        },
     },
     externals: [{}], // Возможно, вам потребуется настроить externals, если у вас есть зависимости, которые не должны быть включены в бандл.
     plugins: [],
