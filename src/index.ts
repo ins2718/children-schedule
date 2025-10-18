@@ -2,14 +2,21 @@ import {
     Document,
     Packer,
     PageOrientation,
+    Paragraph,
 } from "docx";
 import { writeFileSync } from "fs";
 import { getHeader } from "./header";
-import { AlignmentTypeType, Lesson, twipsPerCm } from "./types";
+import { twipsPerCm } from "./types";
 import mainTable from "./main-table";
 import { parseDate } from "./helpers";
+import { parseMorningActivities } from "./parsers";
+import * as path from "path";
 
 async function build() {
+    const morningActivitiesPath = path.join(__dirname, "..", "data", "morning.txt");
+    const morningActivitiesByDay = parseMorningActivities(morningActivitiesPath);
+    const eveningActivitiesPath = path.join(__dirname, "..", "data", "evening.txt");
+    const eveningActivitiesByDay = parseMorningActivities(eveningActivitiesPath);
     const data = {
         theme: "",
         purpose: "",
@@ -20,11 +27,6 @@ async function build() {
         gymCardNumber: 5,
         weekNumber: 5,
         morningCircleNumber: 10,
-        days: [
-            // Понедельник
-            {
-            }
-        ]
     };
 
     const mainRowHeight = 13 * twipsPerCm;
@@ -45,7 +47,16 @@ async function build() {
                 children: [
                     ...getHeader({ theme: data.theme, purpose: data.purpose, firstDay: data.firstDay, lastDay: data.lastDay }),
                     // ОСНОВНАЯ ТАБЛИЦА
-                    mainTable({ mainRowHeight, cardNumber: data.cardNumber, cardTitle: data.cardTitle, gymCardNumber: data.gymCardNumber, weekNumber: data.weekNumber, morningCircleNumber: data.morningCircleNumber, date: firstDay}),
+                    ...morningActivitiesByDay.map((_, i) => {
+                        const date = new Date(firstDay);
+                        date.setDate(firstDay.getDate() + i);
+
+                        const ret = [
+                            mainTable({ mainRowHeight: mainRowHeight + (i === 0 ? 0 : 1 * twipsPerCm), cardNumber: data.cardNumber, cardTitle: data.cardTitle, gymCardNumber: data.gymCardNumber, weekNumber: data.weekNumber, morningCircleNumber: data.morningCircleNumber, date, morningLessons: morningActivitiesByDay[i], eveningLessons: eveningActivitiesByDay[i] }),
+                            new Paragraph({ pageBreakBefore: true, }),
+                        ];
+                        return ret;
+                    }).flat(),
                 ],
             },
         ],

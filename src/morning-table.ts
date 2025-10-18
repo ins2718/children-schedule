@@ -4,7 +4,7 @@ import {
     Table,
     TextRun,
 } from "docx";
-import { AlignmentTypeType } from "./types";
+import { AlignmentTypeType, Lesson } from "./types";
 import eveningTable from "./evening-table";
 
 
@@ -14,14 +14,14 @@ interface MorningTableProps {
     weekNumber: number;
     morningCircleNumber: number;
     date: Date;
+    lessons?: Lesson[];
 }
 
-export default function morningTable({ containerHeightTwips, gymCardNumber, weekNumber, morningCircleNumber, date }: MorningTableProps): Table {
+export default function morningTable({ containerHeightTwips, gymCardNumber, weekNumber, morningCircleNumber, date, lessons }: MorningTableProps): Table {
     const month = date.toLocaleString("ru", { month: "long" });
     return eveningTable({
         containerHeightTwips: containerHeightTwips,
         suffix: [
-            new Paragraph({ text: "", spacing: { before: 0, after: 0 } }),
             new Paragraph({
                 alignment: AlignmentType.CENTER as AlignmentTypeType,
                 children: [new TextRun({ text: `Утренняя гимнастика №${gymCardNumber} (см. картотеку за ${month})`, bold: true, font: "Calibri", size: 22 })],
@@ -34,5 +34,6 @@ export default function morningTable({ containerHeightTwips, gymCardNumber, week
             }),
         ],
         game: "Игры по желанию детей",
+        lessons,
     });
 }

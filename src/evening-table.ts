@@ -12,13 +12,14 @@ import {
     VerticalAlign,
     WidthType,
 } from "docx";
-import { AlignmentTypeType, twipsPerCm } from "./types";
+import { AlignmentTypeType, Lesson, twipsPerCm } from "./types";
 import * as fs from "fs";
 import * as path from "path";
 
 interface EveningTableProps {
     containerHeightTwips: number;
     suffix?: Paragraph[];
+    lessons?: Lesson[];
     game?: string;
 }
 
@@ -44,7 +45,7 @@ function getOneRandomIndependentActivity(): string {
     }
 }
 
-export default function eveningTable({ containerHeightTwips, suffix = [], game }: EveningTableProps): Table {
+export default function eveningTable({ containerHeightTwips, lessons = [], suffix = [], game }: EveningTableProps): Table {
     if (!game) {
         game = getOneRandomIndependentActivity();
     }
@@ -72,7 +73,26 @@ export default function eveningTable({ containerHeightTwips, suffix = [], game }
 
     const rightTop = new TableCell({
         ...commonCellOptions,
-        children: suffix,
+        children: [
+            ...lessons.map((lesson, i) => {
+                const ret = [
+                    new Paragraph({
+                        alignment: AlignmentType.LEFT as AlignmentTypeType,
+                        children: [new TextRun({ text: `${i + 1}. ${lesson.title}`, bold: true, font: "Calibri", size: 22 /* 11 pt */ })],
+                        spacing: { before: 0, after: 0, line: 240 },
+                    }),
+                ];
+                if (typeof lesson.purpose === "string") {
+                    ret.push(new Paragraph({
+                        alignment: AlignmentType.LEFT as AlignmentTypeType,
+                        children: [new TextRun({ text: `Цель: ${lesson.purpose}`, font: "Calibri", size: 22 })],
+                        spacing: { before: 0, after: 0, line: 240 },
+                    }));
+                }
+                return ret;
+            }).flat(),
+            ...suffix
+        ],
     });
 
     const rightBottom = new TableCell({

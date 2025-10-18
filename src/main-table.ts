@@ -12,6 +12,8 @@ interface MainTableProps {
     weekNumber: number;
     morningCircleNumber: number;
     date: Date;
+    morningLessons?: Lesson[];
+    eveningLessons?: Lesson[];
 }
 
 function p(text: string, bold = false) {
@@ -34,11 +36,64 @@ const lessons: Lesson[][] = [
         },
         {
             title: "Развитие речи(логопед)",
-        }
+        },
+    ],
+    [
+        {
+            title: "Развитие речи. Логопед.",
+        },
+        {
+            title: "Развитие ЭМП. Новикова №X, стр. XX.",
+            purpose: "",
+        },
+        {
+            title: "Художественно-эстетическое развитие. Рисование.",
+            purpose: "",
+        },
+    ],
+    [
+        {
+            title: "Познавательное развитие. Окружающий мир.",
+            purpose: "",
+        },
+        {
+            title: "Музыкальное развитие.",
+        },
+        {
+            title: "Конструирование.",
+            purpose: "",
+        },
+    ],
+    [
+        {
+            title: "Развитие речи. Логопед.",
+        },
+        {
+            title: "Развитие ЭМП. Новикова №X. Стр. XX.",
+        },
+        {
+            title: "Аппликация.",
+            purpose: "",
+        },
+        {
+            title: "Физическое развитие.",
+        },
+    ],
+    [
+        {
+            title: "Речевое развитие. Логопед.",
+        },
+        {
+            title: "Художественно-эстетическое развитие. Музыкальная деятельность.",
+        },
+        {
+            title: "Познавательное развитие. Экология.",
+            purpose: "",
+        },
     ],
 ]
 
-export default function mainTable({ mainRowHeight, cardNumber, cardTitle, gymCardNumber, weekNumber, morningCircleNumber, date }: MainTableProps): Table {
+export default function mainTable({ mainRowHeight, cardNumber, cardTitle, gymCardNumber, weekNumber, morningCircleNumber, date, morningLessons, eveningLessons }: MainTableProps): Table {
     const dayOfWeek = date.getDay();
     const daysOfWeek = ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
     const dayOfWeekStr = daysOfWeek[dayOfWeek];
@@ -47,7 +102,7 @@ export default function mainTable({ mainRowHeight, cardNumber, cardTitle, gymCar
         width: { size: 100, type: WidthType.PERCENTAGE },
         layout: TableLayoutType.FIXED,
         // фиксируем ширины колонок, 1-я — 0.53 см ≈ 300 twips
-        columnWidths: [300, 2800, 2000, 2000, 2800],
+        columnWidths: [200, 2800, 1800, 2000, 2800],
         rows: [
             // объединённая шапка
             new TableRow({
@@ -98,7 +153,7 @@ export default function mainTable({ mainRowHeight, cardNumber, cardTitle, gymCar
                         margins: { top: 0, bottom: 0, left: 0, right: 0 },
                     }),
                     // вложенные таблицы «вровень», без внешней рамки, 1-я колонка слита
-                    new TableCell({ margins: { top: 0, bottom: 0, left: 0, right: 0 }, children: [morningTable({ containerHeightTwips: mainRowHeight, gymCardNumber, weekNumber, morningCircleNumber, date })] }),
+                    new TableCell({ margins: { top: 0, bottom: 0, left: 0, right: 0 }, children: [morningTable({ containerHeightTwips: mainRowHeight, gymCardNumber, weekNumber, morningCircleNumber, date, lessons: morningLessons })] }),
                     new TableCell({
                         margins: { top: 0, bottom: 0, left: 0, right: 0 },
                         children: lessons[dayOfWeek].flatMap((value, i) => {
@@ -118,7 +173,7 @@ export default function mainTable({ mainRowHeight, cardNumber, cardTitle, gymCar
                         }),
                     }),
                     new TableCell({ margins: { top: 0, bottom: 0, left: 0, right: 0 }, children: [walkTable({ cardNumber, cardTitle })] }),
-                    new TableCell({ margins: { top: 0, bottom: 0, left: 0, right: 0 }, children: [eveningTable({ containerHeightTwips: mainRowHeight })] }),
+                    new TableCell({ margins: { top: 0, bottom: 0, left: 0, right: 0 }, children: [eveningTable({ containerHeightTwips: mainRowHeight, lessons: eveningLessons })] }),
                 ],
             }),
             new TableRow({
