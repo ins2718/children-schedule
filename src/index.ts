@@ -19,15 +19,15 @@ async function build() {
     const eveningActivitiesPath = path.join(__dirname, "..", "data", "evening.txt");
     const eveningActivitiesByDay = parseMorningActivities(eveningActivitiesPath);
     const data = {
-        theme: "",
-        purpose: "",
+        theme: "Одежда. Обувь. Головные уборы.",
+        purpose: "расширять представления детей о назначении и разнообразии одежды, обуви и головных уборов, формировать умение подбирать их по сезону и ситуации, воспитывать аккуратность и бережное отношение к личным вещам.",
         firstDay: "3/11",
         lastDay: undefined,
-        cardNumber: 6,
-        cardTitle: "Насекомые спрятались",
-        gymCardNumber: 5,
-        weekNumber: 5,
-        morningCircleNumber: 10,
+        cardNumber: 7,
+        cardTitle: "Птицы улетают",
+        gymCardNumber: 1,
+        weekNumber: 1,
+        morningCircleNumber: 11,
     };
 
     const mainRowHeight = 13 * twipsPerCm;
