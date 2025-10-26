@@ -11,6 +11,7 @@ import mainTable from "./main-table";
 import { parseDate } from "./helpers";
 import { parseMorningActivities } from "./parsers";
 import * as path from "path";
+import additionalTable from "./additional-table";
 
 async function build() {
     const morningActivitiesPath = path.join(__dirname, "..", "data", "morning.txt");
@@ -33,12 +34,15 @@ async function build() {
 
     const firstDay = parseDate(data.firstDay);
 
+    const pageWidthTwips = 16838; // Ширина страницы A4 в ландшафтном режиме в twips
+    const marginLeftTwips = 720;
+    const marginRightTwips = 720;
     const doc = new Document({
         sections: [
             {
                 properties: {
                     page: {
-                        margin: { top: 720, bottom: 720, left: 720, right: 720 },
+                        margin: { top: 720, bottom: 720, left: marginLeftTwips, right: marginRightTwips },
                         size: {
                             orientation: PageOrientation.LANDSCAPE,
                         },
@@ -52,11 +56,12 @@ async function build() {
                         date.setDate(firstDay.getDate() + i);
 
                         const ret = [
-                            mainTable({ mainRowHeight: mainRowHeight + (i === 0 ? 0 : 1 * twipsPerCm), cardNumber: data.cardNumber, cardTitle: data.cardTitle, gymCardNumber: data.gymCardNumber, weekNumber: data.weekNumber, morningCircleNumber: data.morningCircleNumber, date, morningLessons: morningActivitiesByDay[i], eveningLessons: eveningActivitiesByDay[i] }),
+                            mainTable({ mainRowHeight: mainRowHeight + (i === 0 ? 0 : 1 * twipsPerCm), cardNumber: data.cardNumber, cardTitle: data.cardTitle, gymCardNumber: data.gymCardNumber, weekNumber: data.weekNumber, morningCircleNumber: data.morningCircleNumber, date, morningLessons: morningActivitiesByDay[i], eveningLessons: eveningActivitiesByDay[i], widthTwips: pageWidthTwips - marginLeftTwips - marginRightTwips }),
                             new Paragraph({ pageBreakBefore: true, }),
                         ];
                         return ret;
                     }).flat(),
+                    additionalTable({ theme: data.theme }),
                 ],
             },
         ],

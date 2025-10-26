@@ -14,6 +14,7 @@ interface MainTableProps {
     date: Date;
     morningLessons?: Lesson[];
     eveningLessons?: Lesson[];
+    widthTwips: number;
 }
 
 function p(text: string, bold = false) {
@@ -93,16 +94,21 @@ const lessons: Lesson[][] = [
     ],
 ]
 
-export default function mainTable({ mainRowHeight, cardNumber, cardTitle, gymCardNumber, weekNumber, morningCircleNumber, date, morningLessons, eveningLessons }: MainTableProps): Table {
+export default function mainTable({ mainRowHeight, cardNumber, cardTitle, gymCardNumber, weekNumber, morningCircleNumber, date, morningLessons, eveningLessons, widthTwips }: MainTableProps): Table {
     const dayOfWeek = date.getDay();
     const daysOfWeek = ["Воскресенье", "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота"];
     const dayOfWeekStr = daysOfWeek[dayOfWeek];
+
+    const firstColumnWidth = 300;
+    const thirdColumnWidth = 2400;
+    const fourthColumnWidth = 3100;
+    const width = widthTwips - firstColumnWidth - thirdColumnWidth - fourthColumnWidth;
 
     return new Table({
         width: { size: 100, type: WidthType.PERCENTAGE },
         layout: TableLayoutType.FIXED,
         // фиксируем ширины колонок, 1-я — 0.53 см ≈ 300 twips
-        columnWidths: [200, 2800, 1800, 2000, 2800],
+        columnWidths: [firstColumnWidth, width / 2, thirdColumnWidth, fourthColumnWidth, width / 2],
         rows: [
             // объединённая шапка
             new TableRow({
@@ -153,7 +159,7 @@ export default function mainTable({ mainRowHeight, cardNumber, cardTitle, gymCar
                         margins: { top: 0, bottom: 0, left: 0, right: 0 },
                     }),
                     // вложенные таблицы «вровень», без внешней рамки, 1-я колонка слита
-                    new TableCell({ margins: { top: 0, bottom: 0, left: 0, right: 0 }, children: [morningTable({ containerHeightTwips: mainRowHeight, gymCardNumber, weekNumber, morningCircleNumber, date, lessons: morningLessons })] }),
+                    new TableCell({ margins: { top: 0, bottom: 0, left: 0, right: 0 }, children: [morningTable({ containerHeightTwips: mainRowHeight, gymCardNumber, weekNumber, morningCircleNumber, date, lessons: morningLessons, width: width / 2 })] }),
                     new TableCell({
                         margins: { top: 0, bottom: 0, left: 0, right: 0 },
                         children: lessons[dayOfWeek].flatMap((value, i) => {
@@ -173,7 +179,7 @@ export default function mainTable({ mainRowHeight, cardNumber, cardTitle, gymCar
                         }),
                     }),
                     new TableCell({ margins: { top: 0, bottom: 0, left: 0, right: 0 }, children: [walkTable({ cardNumber, cardTitle })] }),
-                    new TableCell({ margins: { top: 0, bottom: 0, left: 0, right: 0 }, children: [eveningTable({ containerHeightTwips: mainRowHeight, lessons: eveningLessons })] }),
+                    new TableCell({ margins: { top: 0, bottom: 0, left: 0, right: 0 }, children: [eveningTable({ containerHeightTwips: mainRowHeight, lessons: eveningLessons, width: width / 2})] }),
                 ],
             }),
             new TableRow({

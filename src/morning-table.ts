@@ -15,9 +15,10 @@ interface MorningTableProps {
     morningCircleNumber: number;
     date: Date;
     lessons?: Lesson[];
+    width: number;
 }
 
-export default function morningTable({ containerHeightTwips, gymCardNumber, weekNumber, morningCircleNumber, date, lessons }: MorningTableProps): Table {
+export default function morningTable({ containerHeightTwips, gymCardNumber, weekNumber, morningCircleNumber, date, lessons, width }: MorningTableProps): Table {
     const month = date.toLocaleString("ru", { month: "long" });
     return eveningTable({
         containerHeightTwips: containerHeightTwips,
@@ -35,5 +36,6 @@ export default function morningTable({ containerHeightTwips, gymCardNumber, week
         ],
         game: "Игры по желанию детей",
         lessons,
+        width,
     });
 }

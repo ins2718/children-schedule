@@ -21,6 +21,7 @@ interface EveningTableProps {
     suffix?: Paragraph[];
     lessons?: Lesson[];
     game?: string;
+    width: number;
 }
 
 /**
@@ -45,7 +46,7 @@ function getOneRandomIndependentActivity(): string {
     }
 }
 
-export default function eveningTable({ containerHeightTwips, lessons = [], suffix = [], game }: EveningTableProps): Table {
+export default function eveningTable({ containerHeightTwips, lessons = [], suffix = [], game, width }: EveningTableProps): Table {
     if (!game) {
         game = getOneRandomIndependentActivity();
     }
@@ -142,7 +143,7 @@ export default function eveningTable({ containerHeightTwips, lessons = [], suffi
         },
         // Нулевые внутренние отступы на уровне таблицы (убрать белые поля вокруг содержимого)
         margins: { top: 0, bottom: 0, left: 0, right: 0 },
-        columnWidths: [300, 2500],
+        columnWidths: [300, width - 300],
         rows: [
             new TableRow({
                 height: { rule: HeightRule.EXACT, value: containerHeightTwips - middleRowHeight - lastRowHeight },
